@@ -1,24 +1,11 @@
 // Admin dashboard script: load users and barangay officials, add/delete officials
-
-function escapeHtml(s) {
-  if (s == null) return '';
-  return String(s).replace(/[&<>"]+/g, function(match){
-    switch(match){
-      case '&': return '&amp;';
-      case '<': return '&lt;';
-      case '>': return '&gt;';
-      case '"': return '&quot;';
-    }
-    return match;
-  });
-}
-
 async function loadUsers() {
   const tbody = document.getElementById('userTable');
-  tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
   try {
-    const token = localStorage.getItem('adminToken');
-    const res = await fetch('/admin/users', { headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
+    const token = localStorage.getItem('token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch('/admin/users', { headers });
     if (!res.ok) throw new Error('Failed to fetch users');
     let users = await res.json();
     if (!Array.isArray(users)) users = [];
@@ -27,31 +14,11 @@ async function loadUsers() {
         <td>${u.id ?? ''}</td>
         <td>${escapeHtml(u.fullname ?? u.name ?? '')}</td>
         <td>${escapeHtml(u.email ?? '')}</td>
-        <td><button class="service-btn action danger" data-id="${u.id}" onclick="deleteUser(${u.id})">Delete</button></td>
       </tr>
     `).join('');
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="4">Error loading users</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="3">Error loading users</td></tr>`;
     console.error(err);
-  }
-}
-
-async function deleteUser(id){
-  if (!id) return;
-  if (!confirm('Delete this user? This action cannot be undone.')) return;
-  try {
-    const token = localStorage.getItem('adminToken');
-    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-    const res = await fetch('/admin/users/' + id, { method: 'DELETE', headers });
-    if (!res.ok) {
-      const err = await res.json().catch(()=>({message:'server error'}));
-      throw new Error(err.message || 'Failed to delete');
-    }
-    await loadUsers();
-    alert('User deleted');
-  } catch (err) {
-    console.error(err);
-    alert('Error deleting user: ' + (err.message || err));
   }
 }
 
@@ -59,8 +26,9 @@ async function loadOfficials() {
   const tbody = document.getElementById('officialsTable');
   tbody.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
   try {
-    const token = localStorage.getItem('adminToken');
-    const res = await fetch('/admin/officials', { headers: token ? { 'Authorization': 'Bearer ' + token } : {} });
+    const token = localStorage.getItem('token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch('/admin/officials', { headers });
     if (!res.ok) throw new Error('Failed to fetch officials');
     let list = await res.json();
     if (!Array.isArray(list)) list = [];
@@ -89,7 +57,7 @@ async function addOfficial(ev) {
     return;
   }
   try {
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem('token');
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = 'Bearer ' + token;
     const res = await fetch('/admin/officials', {
@@ -104,6 +72,7 @@ async function addOfficial(ev) {
     const data = await res.json();
     document.getElementById('officialForm').reset();
     await loadOfficials();
+    // also notify main page to refresh if open (best-effort)
     if (window.opener && window.opener.refreshOfficials) window.opener.refreshOfficials();
     alert('Official added');
   } catch (err) {
@@ -115,8 +84,9 @@ async function addOfficial(ev) {
 async function deleteOfficial(id) {
   if (!confirm('Delete this official?')) return;
   try {
-    const token = localStorage.getItem('adminToken');
-    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) headers['Authorization'] = 'Bearer ' + token;
     const res = await fetch('/admin/officials/' + id, { method: 'DELETE', headers });
     if (!res.ok) throw new Error('Failed to delete');
     await loadOfficials();
@@ -127,20 +97,31 @@ async function deleteOfficial(id) {
   }
 }
 
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/[&<>"]+/g, function(match){
+    switch(match){
+      case '&': return '&amp;';
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '"': return '&quot;';
+    }
+    return match;
+  });
+}
+
 // wire events
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Ensure only logged-in admins can access this page.
-  const adminToken = localStorage.getItem('adminToken');
-  if (!adminToken) {
-    // not logged in as admin — redirect to admin login
-    window.location.href = 'admin-login.html';
-    return;
-  }
-
   const form = document.getElementById('officialForm');
   form && form.addEventListener('submit', addOfficial);
   const addBtn = document.getElementById('addOfficialBtn');
   addBtn && addBtn.addEventListener('click', addOfficial);
+  // ensure admin token exists, otherwise go to login
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = 'admin-login.html';
+    return;
+  }
   loadUsers();
   loadOfficials();
   // Admin logout button
@@ -153,7 +134,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
       localStorage.removeItem('fullname');
       localStorage.removeItem('email');
       localStorage.removeItem('created_at');
-      localStorage.removeItem('adminToken');
       // redirect to main landing page
       window.location.href = 'index.html';
     });

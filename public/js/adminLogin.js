@@ -12,8 +12,9 @@ async function adminLogin() {
 	});
 		const data = await res.json().catch(() => ({}));
 		if (!res.ok) return alert(data.error || data.message || 'Login failed');
-		// store admin token for protected admin actions
+		// store admin token for protected admin actions (store as `token` for compatibility)
 		if (data.token) {
+			localStorage.setItem('token', data.token);
 			localStorage.setItem('adminToken', data.token);
 		}
 		// on success, go to admin dashboard

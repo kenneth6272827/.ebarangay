@@ -295,7 +295,7 @@ nav {
 
 .profile-dropdown {
   position: absolute;
-  top: calc(var(--header-height, 80px) + 8px);
+  top: 50px;
   right: 0;
   background: white;
   border-radius: 8px;
@@ -530,14 +530,6 @@ nav {
     display: flex;
   }
 
-  /* Place hamburger and profile button adjacent on the right */
-  .logo { order: 1; }
-  .nav-links { order: 2; }
-  .hamburger { order: 3; margin-left: 8px; }
-  .profile-wrap { order: 4; margin-left: 6px; }
-
-  .profile-btn { width: 40px; height: 40px; }
-
   .hero h1 {
     font-size: 2rem;
   }
@@ -562,20 +554,6 @@ nav {
   .card-grid {
     grid-template-columns: 1fr;
   }
-
-  /* Align profile + hamburger and center app action buttons on mobile */
-  .nav-content { align-items: center; }
-  .profile-wrap, .hamburger { display: flex; align-items: center; }
-  .profile-wrap { margin-left: 6px; }
-
-  /* Make service buttons in cards centered and consistent width for better alignment */
-  .card .service-btn, .card .service-btn.action, .service-btn {
-    display: block;
-    margin: 10px auto 0;
-    width: calc(100% - 40px);
-    max-width: 260px;
-    box-sizing: border-box;
-  }
 }
 
 @media (max-width: 480px) {
@@ -594,42 +572,6 @@ nav {
   .hero h1 {
     font-size: 1.8rem;
   }
-}
-
-/* Extra tiny-phone adjustments to make main page fit narrow screens */
-@media (max-width: 375px) {
-  :root { --header-height: 52px; }
-  header, nav { height: var(--header-height); }
-
-  /* Hero tweaks */
-  .hero h1 { font-size: 1.2rem; line-height: 1.25; margin-bottom: 8px; }
-  .hero p { font-size: 0.95rem; margin-bottom: 12px; }
-
-  /* Cards and grids */
-  .card { padding: 14px; }
-  .card h3 { font-size: 1rem; }
-  .card p { font-size: 0.95rem; }
-  .card-grid { gap: 12px; }
-
-  /* Profile and sections */
-  .profile-box, section, .about-content { margin: 8px; padding: 12px; border-radius: 10px; }
-
-  /* Officials: stack and center content */
-  .officials-grid { grid-template-columns: 1fr; }
-  .official-card { align-items: center; text-align: center; }
-  .official-card .official-name { font-size: 1rem; }
-  .official-card .official-position { font-size: 0.95rem; }
-
-  /* Navigation: compact link styles */
-  .nav-links.active { top: var(--header-height); padding-top: 8px; }
-  .nav-links .nav-link { font-size: 14px; }
-
-  /* Tables: allow small font and stacked layout fallback */
-  table, .profile-box table { font-size: 13px; }
-  th, td { padding: 8px; }
-
-  /* Buttons: keep comfortable tap size */
-  button, .service-btn { padding: 10px 12px; font-size: 15px; }
 }
 
 /* Responsive helpers and tweaks */
