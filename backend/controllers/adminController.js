@@ -2,6 +2,7 @@ const pool = require("../db");
 const bcrypt = require("bcrypt");
 const fs = require('fs').promises;
 const path = require('path');
+const usersFileUtils = require('../data/usersFile');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
@@ -29,12 +30,11 @@ async function writeJson(filePath, obj) {
 	await fs.writeFile(filePath, JSON.stringify(obj, null, 2), 'utf8');
 }
 
-// Use DB when available, otherwise fallback to file storage for users/admins/officials
-const usingDb = Boolean(process.env.PG_HOST || process.env.PG_USER || process.env.PG_DATABASE || process.env.DATABASE_URL);
+// Force file-based storage for users (do not use Postgres/pgAdmin)
+const usingDb = false;
 
 const JWT_SECRET = process.env.JWT_SECRET || (() => {
 	const s = crypto.randomBytes(32).toString('hex');
-	console.warn('Warning: JWT_SECRET not set in env — using ephemeral secret (tokens will not persist across restarts).');
 	return s;
 })();
 
@@ -96,11 +96,8 @@ module.exports = {
 		try {
 			// require admin token
 			if (!requireAdmin(req, res)) return;
-			if (usingDb) {
-				const result = await pool.query('SELECT id, fullname, email, created_at FROM users ORDER BY id ASC');
-				return res.json(result.rows);
-			}
-			const users = await readJson(usersFile);
+			// file-based users
+			const users = await usersFileUtils.getAll();
 			return res.json(users.map(u => ({ id: u.id, fullname: u.fullname || u.name, email: u.email, created_at: u.created_at })));
 		} catch (err) {
 			console.error('getAllUsers error', err);

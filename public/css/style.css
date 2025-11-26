@@ -584,6 +584,42 @@ img, svg, picture { max-width: 100%; height: auto; display: block; }
 /* Make tables horizontally scrollable on small screens */
 table { width: 100%; }
 
+/* Mobile card-like table layout (applied by JS when viewport is small) */
+.table-card {
+  border: 0;
+}
+.table-card thead { display: none; }
+.table-card tbody tr {
+  display: block;
+  margin-bottom: 12px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+.table-card tbody tr td {
+  display: block;
+  padding: 8px 0;
+  border: none;
+}
+.table-card tbody tr td:before {
+  content: attr(data-label) ": ";
+  font-weight: 700;
+  display: inline-block;
+  width: 120px;
+  color: #333;
+}
+.table-card tbody tr td:last-child { padding-bottom: 0; }
+
+/* Reduce header footprint on mobile to give more vertical space */
+@media (max-width: 768px) {
+  header, nav { height: 64px; }
+  :root { --header-height: 64px; }
+  .nav-content { padding: 8px 12px; }
+  .logo { font-size: 18px; }
+}
+
+
 @media (max-width: 768px) {
   :root { --header-height: 64px; }
   header h2 { font-size: 18px; }
