@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/style.css" />
+<title>Admin Dashboard</title>
+</head>
+<body>
+
+
+<header style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;">
+	<h2 style="margin:0">Admin Dashboard</h2>
+	<div>
+		<button id="adminLogoutBtn" class="service-btn secondary" title="Logout">Logout</button>
+	</div>
+</header>
+
+
+<div class="profile-box">
+<h3>All Registered Users</h3>
+<table border="1" width="100%" style="border-collapse: collapse;">
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="userTable"></tbody>
+</table>
+</div>
+
+<div class="profile-box" style="margin-top:20px">
+	<h3>Manage Barangay Officials</h3>
+	<form id="officialForm" style="display:flex;gap:8px;flex-wrap:wrap;align-items:end">
+		<div style="flex:1;min-width:180px">
+			<label for="offName">Name</label><br>
+			<input id="offName" type="text" placeholder="Full name" />
+		</div>
+		<div style="flex:1;min-width:160px">
+			<label for="offPosition">Position</label><br>
+			<input id="offPosition" type="text" placeholder="e.g. Punong Barangay" />
+		</div>
+		<div style="flex:1;min-width:160px">
+			<label for="offContact">Contact</label><br>
+			<input id="offContact" type="text" placeholder="Phone or email (optional)" />
+		</div>
+		<div>
+			<button id="addOfficialBtn" class="service-btn">Add Official</button>
+		</div>
+	</form>
+
+	<table border="1" width="100%" style="border-collapse: collapse;margin-top:12px">
+		<thead>
+			<tr><th>ID</th><th>Name</th><th>Position</th><th>Contact</th><th>Action</th></tr>
+		</thead>
+		<tbody id="officialsTable"></tbody>
+	</table>
+</div>
+
+
+	<script src="js/admin.js"></script>
+</body>
+</html>

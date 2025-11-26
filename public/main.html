@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Barangay System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Main Application -->
+    <div class="main-container" id="mainContainer">
+        <nav>
+            <div class="nav-content">
+                <div class="logo">E-Barangay</div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#" class="nav-link active" data-section="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-section="services">Services</a></li>
+                    <li><a href="#" class="nav-link" data-section="officials">Barangay Officials</a></li>
+                    <li><a href="#" class="nav-link" data-section="about">About</a></li>
+                </ul>
+                <!-- Profile button (right corner) -->
+                <div class="profile-wrap" id="profileWrap" style="position:relative;">
+                    <button id="profileBtn" class="profile-btn" aria-haspopup="true" aria-expanded="false" title="Profile">
+                        <span class="profile-avatar" id="profileAvatar">U</span>
+                    </button>
+                    <div class="profile-dropdown hidden" id="profileDropdown" role="menu" aria-hidden="true">
+                        <button class="dropdown-item" id="viewProfileBtn">View Profile</button>
+                        <button class="dropdown-item" id="dropdownLogoutBtn">Logout</button>
+                    </div>
+                </div>
+                <div class="hamburger" id="hamburger" role="button" tabindex="0" aria-label="Toggle navigation" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Home Section -->
+            <div class="section active" id="home">
+                <div class="hero">
+                    <h1>Welcome to E-Barangay System</h1>
+                    <p>Your one-stop solution for all barangay services and information. Experience efficient, transparent, and accessible community services.</p>
+                </div>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>📋 Easy Documentation</h3>
+                        <p>Request barangay clearances, certificates, and permits online with just a few clicks.</p>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Fast Processing</h3>
+                        <p>Experience quick turnaround times for all your barangay document requests.</p>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Secure Platform</h3>
+                        <p>Your information is protected with advanced security measures and encryption.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Community Events</h3>
+                        <p>Stay updated with upcoming barangay events and community programs.</p>
+                        <button class="service-btn">View Events</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Section -->
+            <div class="section" id="services">
+                <div class="hero">
+                    <h1>Barangay Services</h1>
+                    <p>Access various barangay services conveniently online</p>
+                </div>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3>Barangay Clearance</h3>
+                        <p>Apply for barangay clearance required for employment, business permits, and other purposes.</p>
+                        <a href="brgy clearance pdf gen.html" style="display:inline-block;margin-top:10px"><button class="service-btn">Generate Certificate</button></a>
+                    </div>
+                    <div class="card">
+                        <h3>Certificate of Indigency</h3>
+                        <p>Request a certificate of indigency for medical, educational, or legal purposes.</p>
+                        <a href="brgy indigency pdf gen.html" style="display:inline-block;margin-top:10px"><button class="service-btn">Generate Certificate</button></a>
+                    </div>
+                    <div class="card">
+                        <h3>Certificate of Residency</h3>
+                        <p>Obtain proof of residency in the barangay for various requirements.</p>
+                        <a href="brgy rertificate of residency pdf gen.html" style="display:inline-block;margin-top:10px"><button class="service-btn">Generate Certificate</button></a>
+                    </div>
+                    <div class="card">
+                        <h3>Business Permit</h3>
+                        <p>Apply for barangay business permit clearance for your establishment.</p>
+                        <a href="business permit pdf gen.html" style="display:inline-block;margin-top:10px"><button class="service-btn">Apply Now</button></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Officials Section -->
+            <div class="section" id="officials">
+                <div class="hero">
+                    <h1>Barangay Officials</h1>
+                    <p>Meet the leaders serving our community</p>
+                </div>
+                <div id="officialsGrid" class="officials-grid" aria-live="polite">
+                    <!-- Officials are rendered dynamically. If you don't see entries, an admin can add them from the Admin dashboard. -->
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="section" id="about">
+                <div class="about-content">
+                    <h2>About E-Barangay System</h2>
+                    <p>The E-Barangay System is a digital platform designed to modernize and streamline barangay services.</p>
+                    <h2>Our Vision</h2>
+                    <p>To create a transparent, accessible, and technology-driven barangay governance.</p>
+                    <h2>Our Mission</h2>
+                    <p>We are committed to delivering exceptional public service through innovation and technology.</p>
+                    <h2>Key Features</h2>
+                    <p>• Online document requests<br>• Real-time status tracking<br>• Secure data handling<br>• Mobile responsive</p>
+                </div>
+            </div>
+            <!-- Profile Section -->
+            <div class="section" id="profile">
+                <div class="hero">
+                    <h1>Your Profile</h1>
+                    <p>View and verify your account information stored on this site.</p>
+                </div>
+                <div class="card-grid">
+                    <div class="card" style="min-width:320px;">
+                        <h3 id="profileName">Name</h3>
+                        <p><strong>Email:</strong> <span id="profileEmail">—</span></p>
+                        <p><strong>Member ID:</strong> <span id="profileId">—</span></p>
+                        <p><strong>Registered:</strong> <span id="profileRegistered">—</span></p>
+                        <div style="height:10px"></div>
+                        <button id="refreshProfile" class="service-btn">Refresh Profile</button>
+                    </div>
+                    <div class="card">
+                        <h3>Profile Notes</h3>
+                        <p class="small">Keep your account information up to date. Use the Settings page to edit contact details (if available).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

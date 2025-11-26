@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Certificate PDF Generator</title>
+    <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+      background: #f9f9f9;
+      color: #2c3e50;
+    }
+    .wrap {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e8ecf1;
+      width: 980px;
+      max-width: 100%;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      display: flex;
+      gap: 30px;
+      align-items: stretch;
+      animation: slideUp 0.5s ease-out;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .left {
+      flex: 1 1 420px;
+    }
+    .right {
+      width: 380px;
+      flex-shrink: 0;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #2c3e50;
+    }
+    p.lead {
+      margin: 12px 0 18px 0;
+      color: #666;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+    }
+    label {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    input[type=text], input[type=date], textarea {
+      background: #fafbfc;
+      border: 1px solid #d1d8e0;
+      color: #2c3e50;
+      padding: 11px 12px;
+      border-radius: 8px;
+      outline: none;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+    input:focus, textarea:focus {
+      box-shadow: 0 0 0 4px rgba(102,126,234,0.12);
+      transform: translateY(-1px);
+      border-color: rgba(102,126,234,0.6);
+      background: white;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .row {
+      display: flex;
+      gap: 12px;
+    }
+    .row .col {
+      flex: 1;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-top: 20px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 11px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(118, 75, 162, 0.12);
+      transition: all 0.24s ease;
+      font-size: 14px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.16);
+    }
+    .btn.ghost {
+      background: white;
+      color: #667eea;
+      border: 1px solid rgba(102,126,234,0.18);
+      box-shadow: none;
+    }
+    .btn.ghost:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .preview {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(118,75,162,0.06);
+    }
+    .mock {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 12px;
+      color: #666;
+      font-size: 13px;
+      border: 1px solid #e8ecf1;
+    }
+    .mock .title {
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+    .mock .meta {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+    .logo-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .logo-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .small {
+      font-size: 13px;
+      color: #666;
+    }
+    .foot {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      color: #999;
+      font-size: 12px;
+    }
+    .hint {
+      font-size: 12px;
+      color: #999;
+    }
+    @media (max-width: 920px) {
+      .card {
+        flex-direction: column;
+        padding: 30px;
+      }
+      .right {
+        width: 100%;
+      }
+    }
+    /* Extra small screen tweaks */
+    @media (max-width: 600px) {
+      .card { padding: 18px; gap: 16px; }
+      .row { flex-direction: column; }
+      .right { width: 100%; }
+      .actions { flex-direction: column; align-items: stretch; }
+      .actions .btn { width: 100%; }
+      .logo-circle { width: 48px; height: 48px; }
+      input[type=text], input[type=date], textarea { font-size: 15px; padding: 10px; }
+      .preview { padding: 12px; }
+      .mock { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="card" role="region" aria-label="Certificate generator">
+            <div class="left">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                    <button id="returnBtn" class="btn ghost" style="padding:8px 10px;border-radius:8px;">← Return</button>
+                    <h1 style="margin:0">Certificate of Residency</h1>
+                </div>
+                <p class="lead">Generate an official-looking PDF certificate with your details. The output will be saved to your device.</p>
+
+                <form id="certificateForm" class="form">
+                    <div class="field">
+                        <label for="fullname">Full name</label>
+                        <input id="fullname" name="fullname" type="text" placeholder="Juan dela Cruz" required />
+                    </div>
+
+                    <div class="field">
+                        <label for="address">Address</label>
+                        <input id="address" name="address" type="text" placeholder="123 Barangay St., City" required />
+                    </div>
+
+                    <div class="row">
+                      <div class="col field">
+                        <label for="barangay">Barangay</label>
+                        <input id="barangay" name="barangay" type="text" placeholder="Brgy. Example" />
+                      </div>
+                      <div class="col field">
+                        <label for="municipality">Municipality/City</label>
+                        <input id="municipality" name="municipality" type="text" placeholder="Example City" />
+                      </div>
+                      <div class="col field">
+                        <label for="province">Province</label>
+                        <input id="province" name="province" type="text" placeholder="Example Province" />
+                      </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col field">
+                            <label for="date">Issue date</label>
+                            <input id="date" name="date" type="date" required />
+                        </div>
+                        <div class="col field">
+                            <label for="purpose">Purpose (optional)</label>
+                            <input id="purpose" name="purpose" type="text" placeholder="e.g. for employment" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="note">Additional note (optional)</label>
+                        <textarea id="note" name="note" placeholder="Any additional statement to include in the certificate"></textarea>
+                    </div>
+
+                  <div class="row">
+                    <div class="col field">
+                      <label for="punong">Punong Barangay (name)</label>
+                      <input id="punong" name="punong" type="text" placeholder="Punong Barangay Name" />
+                    </div>
+                    <div class="col field">
+                      <label for="secretary">Barangay Secretary (name)</label>
+                      <input id="secretary" name="secretary" type="text" placeholder="Barangay Secretary Name" />
+                    </div>
+                  </div>
+
+                    <div class="actions">
+                        <button type="submit" class="btn">Generate PDF</button>
+                        <button type="button" id="downloadSample" class="btn ghost">Download Sample</button>
+                        <div style="flex:1"></div>
+                        <div class="hint">Tip: Use real names for official requests</div>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="right">
+                <div class="preview" aria-hidden="false">
+                    <div>
+                        <div class="logo-row">
+                            <div class="logo-circle">
+                                <img id="previewLogo" src="logo1.png" alt="Barangay logo" style="width:56px;height:56px;border-radius:50%;object-fit:cover;display:block" onerror="this.style.display='none'; this.parentNode.classList.add('fallback')" />
+                                <span class="logo-fallback" style="display:none">PB</span>
+                            </div>
+                            <div>
+                                <div class="mock title">Office of the Punong Barangay</div>
+                                <div class="mock meta">Certificate preview</div>
+                            </div>
+                        </div>
+
+                        <div style="height:10px"></div>
+
+                        <div class="mock" id="previewArea" style="line-height:1.4">
+                         <div style="text-align:center;margin-bottom:8px">
+                           <div style="font-weight:700;color:#2c3e50">REPUBLIC OF THE PHILIPPINES</div>
+                           <div id="pvMunicipality" style="font-size:13px;color:#6b7280">—</div>
+                           <div id="pvBarangay" style="font-size:15px;font-weight:700;margin-top:4px">BARANGAY —</div>
+                         </div>
+                         <div style="height:8px"></div>
+                         <div style="text-align:center;font-weight:700;color:#2c3e50;margin-bottom:6px">CERTIFICATE OF RESIDENCY</div>
+                         <div style="height:6px"></div>
+                         <div class="small" id="pvBody">This preview will show the certificate text when you fill the form.</div>
+                         <div style="height:12px"></div>
+                         <div class="small" id="pvDate">Date: <strong>—</strong></div>
+                         <div style="height:12px"></div>
+                         <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
+                           <div style="font-size:13px;color:#6b7280">Punong Barangay: <strong id="pvPunong">—</strong></div>
+                           <div style="font-size:13px;color:#6b7280">Secretary: <strong id="pvSecretary">—</strong></div>
+                         </div>
+                        </div>
+                    </div>
+
+                    <div class="foot">
+                        <div class="small">Ready to generate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF (cdn) -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+    <script>
+        function updatePreview(){
+          const name = document.getElementById('fullname').value || '—';
+          const address = document.getElementById('address').value || '—';
+          const date = document.getElementById('date').value ? (new Date(document.getElementById('date').value)).toLocaleDateString() : '—';
+          const barangay = document.getElementById('barangay').value || '—';
+          const municipality = document.getElementById('municipality').value || '—';
+          const province = document.getElementById('province').value || '—';
+          const punong = document.getElementById('punong').value || '—';
+          const secretary = document.getElementById('secretary').value || '—';
+
+          document.getElementById('pvMunicipality').textContent = municipality + (province && province !== '—' ? (', ' + province) : '');
+          document.getElementById('pvBarangay').textContent = (barangay && barangay !== '—') ? barangay.toUpperCase() : 'BARANGAY —';
+          document.getElementById('pvBody').textContent = 
+            `This is to certify that ${name} is a bonafide resident of ${address}, ${barangay}, ${municipality}.`;
+          document.getElementById('pvDate').innerHTML = `Date: <strong>${date}</strong>`;
+          document.getElementById('pvPunong').textContent = punong;
+          document.getElementById('pvSecretary').textContent = secretary;
+        }
+
+        ['fullname','address','date','barangay','municipality','province','punong','secretary'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener(el.tagName === 'INPUT' && el.type === 'date' ? 'change' : 'input', updatePreview);
+        });
+
+        updatePreview();
+
+        // UPDATED: REALISTIC CERTIFICATE OF RESIDENCY (PDF ONLY)
+        document.getElementById('certificateForm').addEventListener('submit', async function(e){
+          e.preventDefault();
+          const fullname = document.getElementById('fullname').value.trim();
+          const address = document.getElementById('address').value.trim();
+          const date = document.getElementById('date').value;
+          const purpose = document.getElementById('purpose').value.trim();
+          const note = document.getElementById('note').value.trim();
+          const barangay = document.getElementById('barangay').value.trim() || '';
+          const municipality = document.getElementById('municipality').value.trim() || '';
+          const province = document.getElementById('province').value.trim() || '';
+          const punong = document.getElementById('punong').value.trim() || '';
+          const secretary = document.getElementById('secretary').value.trim() || '';
+
+          if (!fullname || !address || !date){
+            alert('Please fill required fields (name, address, date).');
+            return;
+          }
+
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+          const pageW = doc.internal.pageSize.getWidth();
+          const margin = 48;
+
+          async function drawHeader(){
+            const logoX = margin; const logoY = 48; const logoSize = 56;
+            function loadImage(url){
+              return new Promise((res, rej)=>{
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = ()=> res(img);
+                img.onerror = ()=> rej(new Error('image load error'));
+                img.src = url;
+              });
+            }
+
+            try{
+              const img = await loadImage('logo1.png');
+              const cv = document.createElement('canvas');
+              cv.width = img.width; cv.height = img.height;
+              const cx = cv.getContext('2d'); cx.drawImage(img,0,0);
+              const dataUrl = cv.toDataURL('image/png');
+              doc.addImage(dataUrl, 'PNG', logoX, logoY, logoSize, logoSize);
+            }catch(e){
+              doc.setFillColor(220,220,220);
+              doc.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2, 'F');
+            }
+
+            const certNo = 'CERT-' + (new Date()).getTime().toString().slice(-6);
+            doc.setFontSize(10);
+            doc.setFont('times','normal');
+            doc.text(certNo, pageW - margin, logoY + 12, { align: 'right' });
+
+            const titleY = logoY + 12;
+            doc.setFontSize(10);
+            doc.setTextColor(30,30,30);
+            doc.setFont('times','normal');
+            const rep = 'REPUBLIC OF THE PHILIPPINES';
+            doc.text(rep, pageW/2, titleY, {align:'center'});
+
+            const muniLine = (municipality + (province ? (', ' + province) : '')).toUpperCase();
+            doc.setFontSize(12);
+            doc.setFont('times','bold');
+            doc.text(muniLine, pageW/2, titleY + 16, {align:'center'});
+
+            doc.setFontSize(14);
+            doc.text((barangay || 'BARANGAY').toUpperCase(), pageW/2, titleY + 34, {align:'center'});
+
+            doc.setFontSize(16);
+            doc.setFont('times','bold');
+            doc.text('CERTIFICATE OF RESIDENCY', pageW/2, titleY + 64, {align:'center'});
+
+            doc.setLineWidth(0.6);
+            doc.setDrawColor(180,180,180);
+            doc.line(margin, titleY + 72, pageW - margin, titleY + 72);
+          }
+
+          await drawHeader();
+
+          const bodyStartY = 160;
+          doc.setFont('times','normal');
+          doc.setFontSize(12);
+          doc.setTextColor(20,20,20);
+
+          let body =
+            `TO WHOM IT MAY CONCERN:\n\n` +
+            `This is to certify that ${fullname} is a bonafide resident of ${address}${barangay ? ', ' + barangay : ''}${municipality ? ', ' + municipality : ''}. ` +
+            `Based on the official records of this Barangay, the above-named individual has been residing in the said address for legitimate and legal purposes.\n\n`;
+
+          if (purpose) body += `This certification is issued upon request of the interested party for the purpose of: ${purpose}.\n\n`;
+          if (note) body += `Remarks: ${note}\n\n`;
+
+          body += `Issued this ${new Date(date).toLocaleDateString()} at the Office of the Punong Barangay.`;
+
+          const textLines = doc.splitTextToSize(body, pageW - margin * 2);
+          let y = bodyStartY;
+          const leading = 18;
+          textLines.forEach(line => { doc.text(line, margin, y); y += leading; });
+
+          y += 36;
+          const sigWidth = 220;
+
+          doc.setFontSize(11);
+          doc.text('______________________________', pageW - margin - sigWidth, y);
+          doc.text(punong || 'Punong Barangay', pageW - margin - sigWidth + 10, y + 16);
+
+          doc.text('______________________________', margin, y);
+          doc.text(secretary || 'Barangay Secretary', margin + 10, y + 16);
+
+          doc.save('Certificate-of-Residency.pdf');
+        });
+
+        document.getElementById('downloadSample').addEventListener('click', function(){
+          document.getElementById('fullname').value = 'Juan dela Cruz';
+          document.getElementById('address').value = '123 Barangay Street';
+          document.getElementById('barangay').value = 'Brgy. Example';
+          document.getElementById('municipality').value = 'Example City';
+          document.getElementById('province').value = 'Example Province';
+          const today = new Date(); document.getElementById('date').value = today.toISOString().slice(0,10);
+          document.getElementById('purpose').value = 'For employment requirements';
+          document.getElementById('note').value = 'For demonstration only.';
+          document.getElementById('punong').value = 'Juan P. Barangay';
+          document.getElementById('secretary').value = 'Maria S. Secretary';
+          updatePreview();
+          setTimeout(()=> document.querySelector('#certificateForm .btn').click(), 250);
+        });
+
+        (function(){
+            const btn = document.getElementById('returnBtn');
+            if (!btn) return;
+            btn.addEventListener('click', function(e){
+                e.preventDefault();
+                try{
+                    if (window.history && window.history.length > 1) {
+                        window.history.back();
+                        setTimeout(()=>{ 
+                            if (location.pathname.endsWith('pfd%20generator.html') || location.pathname.endsWith('pfd generator.html')) 
+                                location.href='index.html'; 
+                        }, 600);
+                    } else {
+                        location.href = 'index.html';
+                    }
+                } catch(err) {
+                    location.href = 'index.html';
+                }
+            });
+        })();
+    </script>
+
+</body>
+</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function(){
+        const img = document.getElementById('previewLogo');
+        if (!img) return;
+        if (img.complete && img.naturalWidth === 0){
+            img.style.display = 'none';
+            const parent = img.parentNode; if (parent) parent.querySelector('.logo-fallback').style.display = 'block';
+        } else {
+            img.addEventListener('error', function(){
+                img.style.display = 'none';
+                const parent = img.parentNode; if (parent) parent.querySelector('.logo-fallback').style.display = 'block';
+            });
+        }
+    });
+</script>

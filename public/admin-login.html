@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/style.css" />
+<title>Admin Login</title>
+</head>
+<body class="auth">
+
+<div class="container" role="main" aria-labelledby="adminLoginTitle">
+	<div style="display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:12px">
+		<div class="logo-circle" aria-hidden="true" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px">BR</div>
+		<div style="text-align:left">
+			<h2 id="adminLoginTitle" style="margin:0;color:#333">Admin Login</h2>
+			<div class="small" style="margin-top:6px;color:#666">Access the administration dashboard</div>
+		</div>
+	</div>
+
+	<form id="adminLoginForm" onsubmit="event.preventDefault(); adminLogin();" style="text-align:left">
+		<label for="username">Username</label>
+		<input id="username" name="username" placeholder="Admin Username" autocomplete="username" />
+
+		<label for="password">Password</label>
+		<input id="password" name="password" type="password" placeholder="Password" autocomplete="current-password" />
+
+		<button type="submit">Login</button>
+	</form>
+
+	<div style="margin-top:12px;text-align:center">
+		<a href="index.html" style="color:#667eea;text-decoration:none" aria-label="Return to site">Return to site</a>
+	</div>
+</div>
+
+<script src="js/adminLogin.js"></script>
+</body>
+</html>
