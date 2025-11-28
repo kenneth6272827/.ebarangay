@@ -30,8 +30,26 @@ async function writeJson(filePath, obj) {
 	await fs.writeFile(filePath, JSON.stringify(obj, null, 2), 'utf8');
 }
 
+// ensure an initial admin exists when using file-based storage
+async function ensureInitialAdmin() {
+	await ensureFile(adminsFile);
+	const admins = await readJson(adminsFile);
+	if (!admins || admins.length === 0) {
+		const defaultPwd = process.env.DEFAULT_ADMIN_PWD || 'admin123';
+		const hashed = await bcrypt.hash(defaultPwd, 10);
+		const admin = { id: 1, username: 'admin', password: hashed, created_at: new Date().toISOString() };
+		await writeJson(adminsFile, [admin]);
+		console.log('Created default admin user `admin` (change DEFAULT_ADMIN_PWD to customize)');
+	}
+}
+
 // Force file-based storage for users (do not use Postgres/pgAdmin)
 const usingDb = false;
+
+// If running in file-only mode, ensure the initial admin exists on module load
+if (!usingDb) {
+	ensureInitialAdmin().catch(err => console.error('ensureInitialAdmin error', err));
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || (() => {
 	const s = crypto.randomBytes(32).toString('hex');
@@ -76,10 +94,10 @@ module.exports = {
 				const token = jwt.sign({ id: admin.id, username: admin.username, role: 'admin' }, JWT_SECRET, { expiresIn: '12h' });
 				return res.json({ message: 'Admin login success', admin: { id: admin.id, username: admin.username }, token });
 			} else {
-				// file fallback
-				await ensureFile(adminsFile);
-				const admins = await readJson(adminsFile);
-				const admin = admins.find(a => a.username === username);
+					// file fallback: ensure an admin exists and load
+					await ensureInitialAdmin();
+					const admins = await readJson(adminsFile);
+					const admin = admins.find(a => a.username === username);
 				if (!admin) return res.status(400).json({ error: 'Invalid admin username' });
 				const match = await bcrypt.compare(password || '', admin.password);
 				if (!match) return res.status(400).json({ error: 'Incorrect admin password' });
